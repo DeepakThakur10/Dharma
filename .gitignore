@@ -1,0 +1,124 @@
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# Dependencies
+node_modules
+node_modules/
+
+# Build outputs
+dist
+dist-ssr
+build
+*.local
+
+# Environment variables - NEVER commit these
+.env
+.env.local
+.env.*.local
+.env.production.local
+.env.development.local
+
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+.idea
+.project
+.settings
+.classpath
+.c9/
+.eclipse
+.history
+*.sublime-project
+*.sublime-workspace
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+.vim
+.emacs
+
+# Testing
+coverage/
+.nyc_output/
+.mocha_output
+
+# Database files
+*.db
+*.sqlite
+*.sqlite3
+mongodb/
+data/
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+dist-tmp/
+
+# IDE
+.vscode/
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+.idea/
+*.iml
+*.iws
+*.ipr
+*.swp
+*.swo
+*.swn
+
+# OS files
+Thumbs.db
+.DS_Store
+.AppleDouble
+.LSOverrideZone.identifier
+
+# Package manager lockfiles (optional - choose based on your team preference)
+# Uncomment if you want to ignore lockfiles
+# package-lock.json
+# yarn.lock
+# pnpm-lock.yaml
+
+# Docker
+docker-compose.override.yml
+.dockerignore
+.docker/
+
+# Git
+.git/
+
+# Certificates and keys
+*.pem
+*.key
+*.crt
+*.cer
+*.pfx
+*.p12
+
+# Runtime
+.turbo/
+.cache/
+.next/
+out/
+
+# Misc
+*.bak
+*.backup
+*~
+.eslintcache
+.stylelintcache
+
+# Logs from various services
+combined.log
+error.log
+

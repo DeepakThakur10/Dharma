@@ -1,0 +1,235 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Outfit:wght@400;500;600;700&display=swap');
+
+@import "tailwindcss";
+
+/* ── Design Tokens ── */
+:root {
+  --brand: #ff6b35;
+  --brand-dark: #e85a2a;
+  --brand-light: #fff4ef;
+  --bg: #fafafa;
+  --bg-card: #ffffff;
+  --bg-sidebar: #ffffff;
+  --border: #e9ecef;
+  --border-light: #f1f3f5;
+  --text: #1a1a1a;
+  --text-secondary: #495057;
+  --text-muted: #868e96;
+  --success: #40c057;
+  --warning: #fab005;
+  --danger: #fa5252;
+  --info: #339af0;
+}
+
+.dark {
+  --brand: #ff8c5a;
+  --brand-dark: #ff6b35;
+  --brand-light: #ff6b3515;
+  --bg: #0f1117;
+  --bg-card: #1a1b23;
+  --bg-sidebar: #13141b;
+  --border: #2c2d35;
+  --border-light: #23242c;
+  --text: #e9ecef;
+  --text-secondary: #adb5bd;
+  --text-muted: #6c757d;
+}
+
+/* ── Base ── */
+@layer base {
+  body {
+    font-family: 'Plus Jakarta Sans', 'Inter', system-ui, sans-serif;
+    color: var(--text);
+    background: var(--bg);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-family: 'Outfit', 'Plus Jakarta Sans', sans-serif;
+    font-weight: 700;
+    color: var(--text);
+  }
+
+  * {
+    border-color: var(--border);
+  }
+}
+
+/* ── Utilities ── */
+@layer utilities {
+  .bg-page {
+    background-color: var(--bg);
+  }
+
+  .bg-card {
+    background-color: var(--bg-card);
+  }
+
+  .bg-sidebar {
+    background-color: var(--bg-sidebar);
+  }
+
+  .bg-brand {
+    background-color: var(--brand);
+  }
+
+  .bg-brand-light {
+    background-color: var(--brand-light);
+  }
+
+  .text-primary {
+    color: var(--text);
+  }
+
+  .text-secondary {
+    color: var(--text-secondary);
+  }
+
+  .text-muted {
+    color: var(--text-muted);
+  }
+
+  .text-brand {
+    color: var(--brand);
+  }
+
+  .border-default {
+    border-color: var(--border);
+  }
+
+  .border-light {
+    border-color: var(--border-light);
+  }
+
+  .ring-brand {
+    --tw-ring-color: var(--brand);
+  }
+
+  /* ── Interactive ── */
+  .interactive {
+    cursor: pointer;
+    transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .interactive:hover {
+    background-color: var(--brand-light);
+    color: var(--brand);
+  }
+
+  .interactive:active {
+    transform: scale(0.98);
+  }
+
+  .dark .interactive:hover {
+    background-color: rgba(255, 107, 53, 0.15);
+    color: var(--brand);
+  }
+}
+
+/* ── Scrollbar ── */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 99px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--text-muted);
+}
+
+/* ── Smooth scroll ── */
+html {
+  scroll-behavior: smooth;
+}
+
+/* ── Focus ring ── */
+*:focus-visible {
+  outline: 2px solid var(--brand);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* ── Landing page utilities ── */
+.gradient-primary {
+  background: linear-gradient(135deg, #ff6b35 0%, #ffa07a 100%);
+}
+
+.gradient-secondary {
+  background: linear-gradient(135deg, #004e89 0%, #1a659e 100%);
+}
+
+.text-gradient {
+  background: linear-gradient(135deg, #ff6b35 0%, #e85a2a 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.card-hover {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.card-hover:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 20px 40px rgba(255, 107, 53, 0.15);
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.6s ease-out forwards;
+}
+
+.animate-slide-up {
+  animation: slideUp 0.8s ease-out forwards;
+}
+
+.animate-delay-1 {
+  animation-delay: 0.1s;
+}
+
+.animate-delay-2 {
+  animation-delay: 0.2s;
+}
+
+.animate-delay-3 {
+  animation-delay: 0.3s;
+}
+
+.animate-delay-4 {
+  animation-delay: 0.4s;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
