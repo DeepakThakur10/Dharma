@@ -110,15 +110,40 @@ jobs:
     env:
       RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
       RENDER_SERVICE_ID: ${{ secrets.RENDER_SERVICE_ID }}
+      RENDER_BACKEND_SERVICE_ID: ${{ secrets.RENDER_BACKEND_SERVICE_ID }}
+      RENDER_FRONTEND_SERVICE_ID: ${{ secrets.RENDER_FRONTEND_SERVICE_ID }}
     steps:
       - name: Trigger Render deploy
         run: |
-          if [ -z "$RENDER_API_KEY" ] || [ -z "$RENDER_SERVICE_ID" ]; then
-            echo "Render secrets are not configured; skipping deploy."
+          if [ -z "$RENDER_API_KEY" ]; then
+            echo "RENDER_API_KEY is not configured; skipping deploy."
             exit 0
           fi
 
-          curl -X POST "https://api.render.com/v1/services/${RENDER_SERVICE_ID}/deploys" \
-            -H "Authorization: Bearer ${RENDER_API_KEY}" \
-            -H "Content-Type: application/json" \
-            -d '{"clearCache": true}'
+          service_ids=()
+
+          if [ -n "$RENDER_BACKEND_SERVICE_ID" ]; then
+            service_ids+=("$RENDER_BACKEND_SERVICE_ID")
+          fi
+
+          if [ -n "$RENDER_FRONTEND_SERVICE_ID" ]; then
+            service_ids+=("$RENDER_FRONTEND_SERVICE_ID")
+          fi
+
+          if [ ${#service_ids[@]} -eq 0 ] && [ -n "$RENDER_SERVICE_ID" ]; then
+            service_ids+=("$RENDER_SERVICE_ID")
+          fi
+
+          if [ ${#service_ids[@]} -eq 0 ]; then
+            echo "No Render service IDs are configured; skipping deploy."
+            exit 0
+          fi
+
+          for service_id in "${service_ids[@]}"; do
+            echo "Triggering Render deploy for service ${service_id}"
+            curl --fail-with-body -sS -X POST "https://api.render.com/v1/services/${service_id}/deploys" \
+              -H "Authorization: Bearer ${RENDER_API_KEY}" \
+              -H "Content-Type: application/json" \
+              -d '{"clearCache": true}'
+            echo
+          done
