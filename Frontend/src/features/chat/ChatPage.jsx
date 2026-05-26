@@ -37,6 +37,7 @@ export default function ChatPage() {
     const { messages, loading: messagesLoading } = useMessages(selectedWorkspaceId);
     const { data: members, isLoading: membersLoading } = useProjectMembers(selectedWorkspaceId);
     const sendMessage = useSendMessage();
+    const removeMember = useRemoveMember();
 
     // Check if current user is the project owner
     const isAdmin = selectedWorkspace?.owner === user?._id;
