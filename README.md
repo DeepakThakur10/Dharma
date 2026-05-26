@@ -90,6 +90,8 @@ That gives you:
 - Health check: [http://localhost:5000/api/health](http://localhost:5000/api/health)
 
 The frontend image is built with `VITE_API_URL=/api`, so browser requests stay same-origin and Nginx forwards `/api` calls to the backend container.
+ 
+## CI/CD test
 
 ## Render Deployment
 
