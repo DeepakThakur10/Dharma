@@ -68,11 +68,29 @@ jobs:
     needs: [frontend, backend]
     if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
+    env:
+      DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+      DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
     steps:
       - uses: actions/checkout@v4
 
-      - name: Normalize image owner
-        run: echo "IMAGE_OWNER=${GITHUB_REPOSITORY_OWNER,,}" >> "$GITHUB_ENV"
+      - name: Prepare image tags
+        run: |
+          image_owner="${GITHUB_REPOSITORY_OWNER,,}"
+          echo "IMAGE_OWNER=${image_owner}" >> "$GITHUB_ENV"
+
+          frontend_tags="ghcr.io/${image_owner}/dharma-frontend:latest"
+          backend_tags="ghcr.io/${image_owner}/dharma-backend:latest"
+
+          if [ -n "$DOCKERHUB_USERNAME" ]; then
+            dockerhub_owner="${DOCKERHUB_USERNAME,,}"
+            echo "DOCKERHUB_OWNER=${dockerhub_owner}" >> "$GITHUB_ENV"
+            frontend_tags="${frontend_tags},docker.io/${dockerhub_owner}/dharma-frontend:latest"
+            backend_tags="${backend_tags},docker.io/${dockerhub_owner}/dharma-backend:latest"
+          fi
+
+          echo "FRONTEND_IMAGE_TAGS=${frontend_tags}" >> "$GITHUB_ENV"
+          echo "BACKEND_IMAGE_TAGS=${backend_tags}" >> "$GITHUB_ENV"
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v2
@@ -87,13 +105,20 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Login to Docker Hub
+        if: env.DOCKERHUB_USERNAME != '' && env.DOCKERHUB_TOKEN != ''
+        uses: docker/login-action@v2
+        with:
+          username: ${{ env.DOCKERHUB_USERNAME }}
+          password: ${{ env.DOCKERHUB_TOKEN }}
+
       - name: Build and push frontend image
         uses: docker/build-push-action@v4
         with:
           context: Frontend
           file: Frontend/Dockerfile
           push: true
-          tags: ghcr.io/${{ env.IMAGE_OWNER }}/dharma-frontend:latest
+          tags: ${{ env.FRONTEND_IMAGE_TAGS }}
 
       - name: Build and push backend image
         uses: docker/build-push-action@v4
@@ -101,7 +126,7 @@ jobs:
           context: backend
           file: backend/Dockerfile
           push: true
-          tags: ghcr.io/${{ env.IMAGE_OWNER }}/dharma-backend:latest
+          tags: ${{ env.BACKEND_IMAGE_TAGS }}
 
   deploy:
     needs: docker
