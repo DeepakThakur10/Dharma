@@ -96,13 +96,13 @@ jobs:
           tags: ghcr.io/${{ github.repository_owner }}/dharma-backend:latest
 
   deploy:
-    needs: docker
-    if: github.ref == 'refs/heads/main' && secrets.RENDER_API_KEY != ''
-    runs-on: ubuntu-latest
-    steps:
-      - name: Trigger Render deploy
-        run: |
-          curl -X POST "https://api.render.com/v1/services/${{ secrets.RENDER_SERVICE_ID }}/deploys" \
-            -H "Authorization: Bearer ${{ secrets.RENDER_API_KEY }}" \
-            -H "Content-Type: application/json" \
-            -d '{"clearCache": true}'
+  needs: docker
+  if: github.ref == 'refs/heads/main'
+  runs-on: ubuntu-latest
+  steps:
+    - name: Trigger Render deploy
+      run: |
+        curl -X POST "https://api.render.com/v1/services/${{ secrets.RENDER_SERVICE_ID }}/deploys" \
+          -H "Authorization: Bearer ${{ secrets.RENDER_API_KEY }}" \
+          -H "Content-Type: application/json" \
+          -d '{"clearCache": true}'
