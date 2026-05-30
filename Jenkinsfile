@@ -77,6 +77,14 @@ stages {
         }
     }
 
+    stage('Create Backend Env') {
+        steps {
+            withCredentials([file(credentialsId: 'backend-env', variable: 'ENV_FILE')]) {
+                bat 'copy /Y "%ENV_FILE%" backend\\.env'
+            }
+        }
+    }
+
     stage('Validate Docker Compose') {
         steps {
             bat 'docker compose config'
