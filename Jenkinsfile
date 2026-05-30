@@ -1,7 +1,7 @@
 pipeline {
 agent any
 
-```
+
 options {
     timestamps()
     disableConcurrentBuilds()
@@ -109,6 +109,6 @@ post {
         archiveArtifacts artifacts: 'Frontend/dist/**', allowEmptyArchive: true
     }
 }
-```
+
 
 }
