@@ -3,6 +3,8 @@ services:
     image: mongo:7
     container_name: dharma-mongo
     restart: unless-stopped
+    networks:
+      - dharma-network
     volumes:
       - mongo_data:/data/db
     healthcheck:
@@ -22,6 +24,8 @@ services:
     depends_on:
       mongo:
         condition: service_healthy
+    networks:
+      - dharma-network
     ports:
       - "5000:5000"
 
@@ -37,8 +41,91 @@ services:
       BACKEND_URL: http://backend:5000
     depends_on:
       - backend
+    networks:
+      - dharma-network
     ports:
       - "3000:80"
 
+  prometheus:
+    image: prom/prometheus:v3.0.1
+    container_name: dharma-prometheus
+    restart: unless-stopped
+    command:
+      - --config.file=/etc/prometheus/prometheus.yml
+      - --storage.tsdb.path=/prometheus
+      - --web.console.libraries=/usr/share/prometheus/console_libraries
+      - --web.console.templates=/usr/share/prometheus/consoles
+    volumes:
+      - ./monitoring/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - prometheus_data:/prometheus
+    depends_on:
+      - backend
+      - node-exporter
+      - cadvisor
+    networks:
+      - dharma-network
+    ports:
+      - "9090:9090"
+
+  grafana:
+    image: grafana/grafana:11.4.0
+    container_name: dharma-grafana
+    restart: unless-stopped
+    environment:
+      GF_SECURITY_ADMIN_USER: admin
+      GF_SECURITY_ADMIN_PASSWORD: admin
+      GF_USERS_ALLOW_SIGN_UP: "false"
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./monitoring/grafana/provisioning:/etc/grafana/provisioning:ro
+    depends_on:
+      - prometheus
+    networks:
+      - dharma-network
+    ports:
+      - "3001:3000"
+
+  node-exporter:
+    image: prom/node-exporter:v1.8.2
+    container_name: dharma-node-exporter
+    restart: unless-stopped
+    command:
+      - --path.procfs=/host/proc
+      - --path.rootfs=/rootfs
+      - --path.sysfs=/host/sys
+      - --collector.filesystem.mount-points-exclude=^/(sys|proc|dev|host|etc)($$|/)
+    volumes:
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - /:/rootfs:ro
+    networks:
+      - dharma-network
+    ports:
+      - "9100:9100"
+
+  cadvisor:
+    image: gcr.io/cadvisor/cadvisor:v0.49.1
+    container_name: dharma-cadvisor
+    restart: unless-stopped
+    privileged: true
+    devices:
+      - /dev/kmsg:/dev/kmsg
+    volumes:
+      - /:/rootfs:ro
+      - /var/run:/var/run:ro
+      - /sys:/sys:ro
+      - /var/lib/docker:/var/lib/docker:ro
+      - /dev/disk:/dev/disk:ro
+    networks:
+      - dharma-network
+    ports:
+      - "8080:8080"
+
+networks:
+  dharma-network:
+    driver: bridge
+
 volumes:
   mongo_data:
+  prometheus_data:
+  grafana_data:

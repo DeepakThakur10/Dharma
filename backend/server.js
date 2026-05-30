@@ -7,6 +7,7 @@ import morgan from 'morgan';
 import connectDB from './config/db.js';
 import mongoose from 'mongoose';
 import { notFound, errorHandler } from './middleware/errorMiddleware.js';
+import { metricsHandler, metricsMiddleware } from './middleware/metrics.js';
 
 import authRoutes from './routes/authRoutes.js';
 import workspaceRoutes from './routes/workspaceRoutes.js';
@@ -56,6 +57,10 @@ app.use(cors({
     credentials: true,
 }));
 app.use(express.json());
+app.use(metricsMiddleware);
+
+// Prometheus metrics endpoint
+app.get('/metrics', metricsHandler);
 
 // Routes
 app.use('/api/auth', authRoutes);
